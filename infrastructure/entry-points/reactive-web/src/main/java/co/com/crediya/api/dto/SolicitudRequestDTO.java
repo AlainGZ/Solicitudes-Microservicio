@@ -25,6 +25,6 @@ public class SolicitudRequestDTO {
 	private String plazo;
 
 	@NotBlank(message = SolicitudConstantes.MENSAJE_TIPO_PRESTAMO_OBLIGATORIO)
-	private TipoPrestamo tipoPrestamo;
+	private String tipoPrestamo;
 
 }
