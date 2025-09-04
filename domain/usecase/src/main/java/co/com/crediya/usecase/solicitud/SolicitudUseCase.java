@@ -12,20 +12,28 @@ import java.time.LocalDate;
 public class SolicitudUseCase {
 
 	private final SolicitudRepository solicitudRepository;
+	private final UsuarioGateway usuarioGateway;
 
 	public Mono<Solicitud> ejecutar(Solicitud solicitud) {
 
-		solicitud.setEstadoSolicitud(
-				solicitud.getEstadoSolicitud() == null
-				? EstadoSolicitud.PENDIENTE_REVISION
-						: solicitud.getEstadoSolicitud()
-		);
-		solicitud.setFechaSolicitud(
-				solicitud.getFechaSolicitud() == null
-				? LocalDate.now()
-						: solicitud.getFechaSolicitud()
-		);
-		return solicitudRepository.save(solicitud);
+		return usuarioGateway.existeUsuario(solicitud.getDocumentoIdentidad())
+				.flatMap(existe -> {
+					if (!existe){
+						return Mono.error(new IllegalArgumentException("El documento no se encuentra registrado"));
+					}
+					solicitud.setEstadoSolicitud(
+							solicitud.getEstadoSolicitud() == null
+									? EstadoSolicitud.PENDIENTE_REVISION
+									: solicitud.getEstadoSolicitud()
+					);
+					solicitud.setFechaSolicitud(
+							solicitud.getFechaSolicitud() == null
+									? LocalDate.now()
+									: solicitud.getFechaSolicitud()
+					);
+					return solicitudRepository.save(solicitud);
+				});
+
 	}
 
 

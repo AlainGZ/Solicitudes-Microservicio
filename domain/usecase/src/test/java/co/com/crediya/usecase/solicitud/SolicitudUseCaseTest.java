@@ -22,7 +22,7 @@ public class SolicitudUseCaseTest {
 	@BeforeEach
 	void setUp() {
 		repository = Mockito.mock(SolicitudRepository.class);
-		useCase = new SolicitudUseCase(repository);
+		//useCase = new SolicitudUseCase(repository);
 	}
 
 	@Test
@@ -51,7 +51,6 @@ public class SolicitudUseCaseTest {
 
 	@Test
 	void ejecutar_debeMantenerEstadoYFecha_siYaExisten() {
-		// Given
 		LocalDate fecha = LocalDate.of(2025, 9, 2);
 		Solicitud solicitud = Solicitud.builder()
 				.documentoIdentidad(123456L)
@@ -64,7 +63,6 @@ public class SolicitudUseCaseTest {
 
 		when(repository.save(any(Solicitud.class))).thenAnswer(invocation -> Mono.just(invocation.getArgument(0)));
 
-		// When & Then
 		StepVerifier.create(useCase.ejecutar(solicitud))
 				.expectNextMatches(s -> s.getEstadoSolicitud() == EstadoSolicitud.APROVADO
 						&& s.getFechaSolicitud().equals(fecha))
