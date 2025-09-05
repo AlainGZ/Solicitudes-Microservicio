@@ -19,7 +19,7 @@ public class SolicitudUseCase {
 		return usuarioGateway.existeUsuario(solicitud.getDocumentoIdentidad())
 				.flatMap(existe -> {
 					if (!existe){
-						return Mono.error(new IllegalArgumentException("El documento no se encuentra registrado"));
+						return Mono.error(new IllegalArgumentException(SolicitudConstantes.MENSAJE_DOCUMENTO_NO_REGISTRADO));
 					}
 					solicitud.setEstadoSolicitud(
 							solicitud.getEstadoSolicitud() == null

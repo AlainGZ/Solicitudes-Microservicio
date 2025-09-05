@@ -2,7 +2,6 @@ package co.com.crediya.api.client;
 
 import co.com.crediya.usecase.solicitud.UsuarioGateway;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
