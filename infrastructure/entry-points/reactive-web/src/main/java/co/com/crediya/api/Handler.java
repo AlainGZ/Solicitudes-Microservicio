@@ -9,7 +9,11 @@ import co.com.crediya.model.solicitud.TipoPrestamo;
 import co.com.crediya.usecase.solicitud.SolicitudConstantes;
 import co.com.crediya.usecase.solicitud.SolicitudUseCase;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -31,6 +35,17 @@ public class Handler {
 
 
     public Mono<ServerResponse> listenSaveSolicitud(ServerRequest serverRequest) {
+        return ReactiveSecurityContextHolder.getContext()
+                .flatMap(context -> {
+                    Authentication auth = context.getAuthentication();
+                    if (auth == null || auth.getAuthorities().stream()
+                            .map(GrantedAuthority::getAuthority)
+                            .noneMatch(role -> role.equals("ROLE_CLIENTE"))){
+                        return ServerResponse.status(HttpStatus.FORBIDDEN)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .bodyValue("{\\\"mensaje\\\":\\\"Solo los clientes pueden crear solicitudes de préstamo\\\"}");
+                    }
+
         return serverRequest
                 .bodyToMono(SolicitudRequestDTO.class)
                 .flatMap(dto -> {
@@ -66,6 +81,7 @@ public class Handler {
                                 .bodyValue(savedSolicitud))
                 .onErrorResume(BusinessException.class, errorHandler::handleBadRequest)
                 .onErrorResume(Exception.class, errorHandler::handleInternalServerError);
+                });
     }
 
 }
