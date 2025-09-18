@@ -4,6 +4,7 @@ import co.com.crediya.model.solicitud.EstadoSolicitud;
 import co.com.crediya.model.solicitud.Solicitud;
 import co.com.crediya.model.solicitud.gateways.SolicitudRepository;
 import lombok.RequiredArgsConstructor;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
@@ -36,6 +37,8 @@ public class SolicitudUseCase {
 
 	}
 
-
+	public Flux<Solicitud> listar(String estado, int page, int size){
+			return solicitudRepository.listarSolicitudes(estado, page, size);
+	}
 
 }

@@ -6,6 +6,7 @@ import co.com.crediya.r2dbc.entity.SolicitudEntity;
 import co.com.crediya.r2dbc.helper.ReactiveAdapterOperations;
 import org.reactivecommons.utils.ObjectMapper;
 import org.springframework.stereotype.Repository;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Repository
@@ -27,5 +28,11 @@ public class SolicitudReactiveRepositoryAdapter extends ReactiveAdapterOperation
 	@Override
 	public Mono<Solicitud> save(Solicitud solicitud){
 		return super.save(solicitud);
+	}
+	@Override
+	public Flux<Solicitud> listarSolicitudes(String estado, int page, int size) {
+		int offset = page * size;
+		return repository.listarSolicitudes( size, offset)
+				.map(entity -> mapper.map(entity, Solicitud.class));
 	}
 }

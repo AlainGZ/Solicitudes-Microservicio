@@ -83,5 +83,14 @@ public class Handler {
                 .onErrorResume(Exception.class, errorHandler::handleInternalServerError);
                 });
     }
+	public Mono<ServerResponse> listar(ServerRequest request) {
+		String estado = request.queryParam("estado").orElse(null);
+		int page = Integer.parseInt(request.queryParam("page").orElse("0"));
+		int size = Integer.parseInt(request.queryParam("size").orElse("10"));
+
+		return ServerResponse.ok()
+				.contentType(MediaType.APPLICATION_JSON)
+				.body(useCase.listar(estado, page, size), Solicitud.class);
+	}
 
 }
